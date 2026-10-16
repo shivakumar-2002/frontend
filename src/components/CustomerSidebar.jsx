@@ -8,7 +8,6 @@ import {
   Award,
   MapPin,
   Phone,
-  MessageCircle,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -16,6 +15,7 @@ import {
   ShieldCheck,
   Scale,
 } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { HariHaraLogo } from './HariHaraLogo';
 import { useShop } from '../context/ShopContext';
 
@@ -259,7 +259,7 @@ export function CustomerSidebar({
               title="WhatsApp Enquiry"
               aria-label="WhatsApp Enquiry"
             >
-              <MessageCircle className="w-4 h-4" />
+              <WhatsAppIcon className="w-4 h-4" />
             </a>
           </div>
         ) : (
@@ -282,7 +282,7 @@ export function CustomerSidebar({
                 className="min-h-[40px] flex items-center justify-center gap-1.5 py-2 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
                 title="WhatsApp Enquiry"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
+                <WhatsAppIcon className="w-3.5 h-3.5" />
                 <span>WhatsApp</span>
               </a>
             </div>
@@ -419,7 +419,7 @@ export function CustomerSidebar({
               rel="noreferrer"
               className="min-h-[44px] flex items-center justify-center gap-1.5 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-colors shadow-sm"
             >
-              <MessageCircle className="w-3.5 h-3.5" />
+              <WhatsAppIcon className="w-3.5 h-3.5" />
               <span>WhatsApp</span>
             </a>
           </div>

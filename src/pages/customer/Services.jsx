@@ -6,13 +6,13 @@ import {
   Wrench,
   ShieldCheck,
   Gift,
-  MessageCircle,
   CheckCircle2,
   Clock,
   ArrowRight,
   HeartHandshake,
   Award,
 } from 'lucide-react';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useShop } from '../../context/ShopContext';
 import { EnquiryModal } from '../../components/EnquiryModal';
 import { HallmarkGuaranteeCard } from '../../components/HallmarkGuaranteeCard';
@@ -231,7 +231,7 @@ export function Services() {
                 className="min-h-[44px] px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 flex items-center gap-2 text-xs font-bold text-emerald-850 transition-colors cursor-pointer active:scale-95"
                 aria-label={`WhatsApp Query for ${srv.title}`}
               >
-                <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>WhatsApp Query</span>
               </button>
 

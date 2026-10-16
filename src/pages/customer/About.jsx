@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Award, HeartHandshake, Sparkles, Scale, MapPin, Phone, MessageCircle } from 'lucide-react';
+import { ShieldCheck, Award, HeartHandshake, Sparkles, Scale, MapPin, Phone } from 'lucide-react';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useShop } from '../../context/ShopContext';
 
 export function About() {
@@ -137,7 +138,7 @@ export function About() {
             className="min-h-[48px] px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-md active:scale-95"
             aria-label="Send WhatsApp message to master craftsman"
           >
-            <MessageCircle className="w-4 h-4 shrink-0" />
+            <WhatsAppIcon className="w-4 h-4 shrink-0" />
             <span>WhatsApp Message</span>
           </a>
         </div>

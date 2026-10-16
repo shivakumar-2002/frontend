@@ -5,7 +5,6 @@ import {
   ShieldCheck,
   Scale,
   Sparkles,
-  MessageCircle,
   Phone,
   RefreshCw,
   Award,
@@ -13,6 +12,7 @@ import {
   HelpCircle,
   Share2,
 } from 'lucide-react';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { api } from '../../services/api';
 import { useShop } from '../../context/ShopContext';
 import { ProductCard } from '../../components/ProductCard';
@@ -285,7 +285,7 @@ export function ProductDetails() {
               onClick={handleWhatsAppEnquiry}
               className="w-full flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-5 rounded-xl shadow-md text-sm transition-all transform hover:-translate-y-0.5 cursor-pointer min-h-[48px] text-center"
             >
-              <MessageCircle className="w-5 h-5 shrink-0" />
+              <WhatsAppIcon className="w-5 h-5 shrink-0" />
               <span>Enquire on WhatsApp with Master Craftsman</span>
             </button>
 

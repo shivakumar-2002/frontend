@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   X,
-  MessageCircle,
   CheckCircle,
   AlertCircle,
   Sparkles,
@@ -9,6 +8,7 @@ import {
   Image as ImageIcon,
   ShieldCheck,
 } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { api } from '../services/api';
 import { useShop } from '../context/ShopContext';
 import { validatePhone, validateText } from '../utils/validators';
@@ -177,7 +177,7 @@ export function EnquiryModal({ isOpen, onClose, product = null }) {
                 rel="noreferrer"
                 className="min-h-[44px] px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
               >
-                <MessageCircle className="w-4 h-4" /> Open Chat Again
+                <WhatsAppIcon className="w-4 h-4" /> Open Chat Again
               </a>
               <button
                 onClick={handleClose}
@@ -190,7 +190,7 @@ export function EnquiryModal({ isOpen, onClose, product = null }) {
         ) : (
           <div>
             <div className="flex items-center gap-2 text-amber-800 text-xs font-bold uppercase tracking-wider mb-1 pr-10">
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
               <span>WhatsApp Direct Workshop Enquiry</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-stone-900 font-serif mb-1 pr-10">
@@ -363,7 +363,7 @@ export function EnquiryModal({ isOpen, onClose, product = null }) {
                   disabled={submitting}
                   className="w-full min-h-[48px] flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 via-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-98 cursor-pointer disabled:opacity-50 text-sm border border-emerald-400/40"
                 >
-                  <MessageCircle className="w-4 h-4 text-white shrink-0" />
+                  <WhatsAppIcon className="w-4 h-4 text-white shrink-0" />
                   <span>{submitting ? 'Opening WhatsApp...' : 'Send Enquiry to WhatsApp (+91 98485 43615)'}</span>
                 </button>
               </div>

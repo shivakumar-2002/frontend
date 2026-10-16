@@ -7,13 +7,13 @@ import {
   Clock,
   ArrowRight,
   Phone,
-  MessageCircle,
   Scale,
   RefreshCw,
   Palette,
   MapPin,
   CheckCircle2,
 } from 'lucide-react';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useShop } from '../../context/ShopContext';
 import { EnquiryModal } from '../../components/EnquiryModal';
 import { HallmarkGuaranteeCard } from '../../components/HallmarkGuaranteeCard';
@@ -362,7 +362,7 @@ export function Home() {
                 rel="noreferrer"
                 className="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-xs"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
+                <WhatsAppIcon className="w-3.5 h-3.5" />
                 Visit Us
               </a>
             </div>
@@ -435,7 +435,7 @@ export function Home() {
               rel="noreferrer"
               className="px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md min-h-[44px] text-center"
             >
-              <MessageCircle className="w-4 h-4" />
+              <WhatsAppIcon className="w-4 h-4" />
               Chat on WhatsApp
             </a>
 

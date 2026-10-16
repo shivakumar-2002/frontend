@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ShieldCheck,
   QrCode,
   Scale,
   RotateCcw,
   BadgeCheck,
-  MessageCircle,
   Sparkles,
-  X,
 } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { useShop } from '../context/ShopContext';
 
 export function HallmarkGuaranteeCard({ className = '' }) {
   const { settings } = useShop();
-  const [imageModalOpen, setImageModalOpen] = useState(false);
   const whatsappNum = settings?.whatsappNumber?.replace(/\D/g, '') || '919848543615';
 
   const guaranteePoints = [
@@ -47,15 +45,14 @@ export function HallmarkGuaranteeCard({ className = '' }) {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-300/10 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20"></div>
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-        {/* Left Column: Clean, Neat High-Res Guarantee Card Photo */}
+        {/* Left Column: Stable, Fixed High-Res Guarantee Card Photo (No Tap-to-Enlarge / Zoom) */}
         <div className="lg:col-span-5 flex flex-col items-center">
-          <div className="relative w-full max-w-md rounded-2xl overflow-hidden border-2 border-amber-300 shadow-xl group bg-white">
+          <div className="relative w-full max-w-md rounded-2xl overflow-hidden border-2 border-amber-300 shadow-xl bg-white">
             <img
               src="/hallmark-guarantee-card.jpg"
               alt="HARI HARA Jewellery Works 91.6 KDM Hallmark Guarantee Card & Ring Delivery Box"
               loading="lazy"
-              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
-              onClick={() => setImageModalOpen(true)}
+              className="w-full h-auto object-cover select-none pointer-events-none"
             />
 
             {/* Bottom Card Ribbon */}
@@ -99,27 +96,27 @@ export function HallmarkGuaranteeCard({ className = '' }) {
             </p>
           </div>
 
-          {/* 4 Feature Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            {guaranteePoints.map((pt, idx) => (
+          {/* Guarantee Highlights Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {guaranteePoints.map((point, idx) => (
               <div
                 key={idx}
-                className={`p-4 rounded-xl border transition-all ${
-                  pt.highlight
-                    ? 'bg-gradient-to-br from-emerald-50 via-white to-amber-50 border-emerald-300 shadow-md'
-                    : 'bg-white/80 border-amber-200 hover:border-amber-400 shadow-xs'
+                className={`p-4 rounded-2xl border transition-all ${
+                  point.highlight
+                    ? 'bg-gradient-to-br from-emerald-50/90 to-amber-50/50 border-emerald-400/80 shadow-md shadow-emerald-950/5'
+                    : 'bg-white/90 border-amber-200/90 shadow-xs hover:border-amber-400'
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 shrink-0 mt-0.5">
-                    {pt.icon}
+                  <div className={`p-2.5 rounded-xl shrink-0 ${point.highlight ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                    {point.icon}
                   </div>
-                  <div className="space-y-1">
-                    <h4 className={`text-xs sm:text-sm font-bold font-serif ${pt.highlight ? 'text-emerald-900' : 'text-amber-950'}`}>
-                      {pt.title}
-                    </h4>
-                    <p className="text-[11px] text-stone-600 leading-relaxed font-medium">
-                      {pt.desc}
+                  <div>
+                    <h3 className={`text-xs sm:text-sm font-bold font-serif ${point.highlight ? 'text-emerald-950' : 'text-stone-900'}`}>
+                      {point.title}
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-stone-600 mt-1 leading-relaxed">
+                      {point.desc}
                     </p>
                   </div>
                 </div>
@@ -127,14 +124,16 @@ export function HallmarkGuaranteeCard({ className = '' }) {
             ))}
           </div>
 
-          {/* 90% Return Banner Highlight */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50 via-white to-emerald-50 border border-amber-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* 90% Return Guarantee Trust Banner */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-100/90 via-amber-50 to-emerald-50/80 border border-amber-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
+              <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-700" />
-                <span>Our 90% Cash / Gold Return Commitment</span>
+                <span className="text-xs font-bold text-amber-950 font-serif">
+                  Our 90% Cash / Gold Return Commitment
+                </span>
               </div>
-              <p className="text-[11px] text-stone-700 leading-relaxed font-medium">
+              <p className="text-[11px] text-stone-600 max-w-md">
                 If you ever face any issue or wish to return your ornament, we honour a guaranteed <strong>90% return value in Cash or Gold value</strong> at prevailing bullion rates. No excuses, no hidden deductions.
               </p>
             </div>
@@ -143,50 +142,14 @@ export function HallmarkGuaranteeCard({ className = '' }) {
               href={`https://wa.me/${whatsappNum}?text=${encodeURIComponent('Namaste L. Srinivasa Chary garu! I would like to know more about the 91.6 Hallmark Guarantee Card and 90% return policy at HARI HARA Jewellery Works.')}`}
               target="_blank"
               rel="noreferrer"
-              className="w-full sm:w-auto shrink-0 min-h-[44px] px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer active:scale-95"
-              aria-label="Verify on WhatsApp"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95 shrink-0"
             >
-              <MessageCircle className="w-4 h-4 shrink-0" />
+              <WhatsAppIcon className="w-4 h-4" />
               <span>Verify on WhatsApp</span>
             </a>
           </div>
         </div>
       </div>
-
-      {/* Modal for viewing the high-res Guarantee Card in full detail */}
-      {imageModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4"
-          onClick={() => setImageModalOpen(false)}
-        >
-          <div
-            className="relative max-w-2xl w-full bg-white/95 backdrop-blur-xl rounded-2xl border border-amber-300 p-3 sm:p-4 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setImageModalOpen(false)}
-              className="absolute -top-3 -right-3 w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-white border border-amber-300 text-stone-700 hover:text-stone-900 flex items-center justify-center shadow-lg cursor-pointer active:scale-95"
-              title="Close modal"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <img
-              src="/hallmark-guarantee-card.jpg"
-              alt="HARI HARA 91.6 KDM Hallmark Guarantee Card Full Preview"
-              className="w-full h-auto rounded-xl object-contain max-h-[85vh] shadow-xs"
-            />
-            <div className="p-3 text-center">
-              <p className="text-xs font-serif font-bold text-amber-900">
-                HARI HARA JEWELLERY WORKS • 91.6 KDM HALLMARK & XRF TESTING CERTIFICATE
-              </p>
-              <p className="text-[11px] text-stone-600 mt-0.5">
-                Exact Item Photo • Computerized Net Weight (6.030g) • 22K Purity • QR Code Product Scanner
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

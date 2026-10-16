@@ -4,7 +4,6 @@ import {
   MessageSquare,
   Search,
   Filter,
-  MessageCircle,
   Phone,
   Mail,
   Clock,
@@ -14,6 +13,7 @@ import {
   Save,
   Gem,
 } from 'lucide-react';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { api } from '../../services/api';
 
 export function AdminEnquiries() {
@@ -243,7 +243,7 @@ export function AdminEnquiries() {
                     rel="noreferrer"
                     className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-3 min-h-[44px] rounded-lg text-xs transition-colors shadow-xs"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <WhatsAppIcon className="w-4 h-4" />
                     Chat on WhatsApp ({activeEnquiry.phone})
                   </a>
 

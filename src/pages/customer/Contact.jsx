@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   MapPin,
   Phone,
-  MessageCircle,
   Clock,
   Mail,
   Send,
@@ -16,6 +15,7 @@ import {
   Sparkles,
   Award,
 } from 'lucide-react';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useShop } from '../../context/ShopContext';
 import { api } from '../../services/api';
 import { validatePhone, validateEmail, validateText } from '../../utils/validators';
@@ -255,7 +255,7 @@ export function Contact() {
                 className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-xs shadow-md transition-colors cursor-pointer active:scale-98"
                 aria-label="Chat on WhatsApp with proprietor"
               >
-                <MessageCircle className="w-4 h-4 shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 shrink-0" />
                 <span>Chat on WhatsApp (+91 98485 43615)</span>
               </a>
             </div>
@@ -278,7 +278,7 @@ export function Contact() {
         <div className="lg:col-span-7 bg-white/90 backdrop-blur-md rounded-2xl p-6 sm:p-10 border border-amber-200/80 shadow-xl space-y-6">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-600" /> WhatsApp Direct Enquiry
+              <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600" /> WhatsApp Direct Enquiry
             </span>
             <h2 className="text-xl sm:text-2xl font-bold font-serif text-stone-900 mt-1">
               Send Your Requirements to WhatsApp
@@ -306,7 +306,7 @@ export function Contact() {
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs transition-colors"
                   >
-                    <MessageCircle className="w-3.5 h-3.5" />
+                    <WhatsAppIcon className="w-3.5 h-3.5" />
                     Open WhatsApp Chat Again
                   </a>
                 </div>
@@ -538,7 +538,7 @@ export function Contact() {
                 disabled={submitting}
                 className="w-full min-h-[48px] flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-600 via-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-md text-sm transition-all active:scale-98 cursor-pointer disabled:opacity-50 border border-emerald-400/40"
               >
-                <MessageCircle className="w-5 h-5 text-white shrink-0" />
+                <WhatsAppIcon className="w-5 h-5 text-white shrink-0" />
                 <span>
                   {submitting ? 'Opening WhatsApp...' : 'Send Enquiry to WhatsApp (+91 98485 43615)'}
                 </span>

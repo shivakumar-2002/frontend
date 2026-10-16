@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, MessageCircle, Clock, ShieldCheck, Award, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Clock, ShieldCheck, Award, ExternalLink } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { HariHaraLogo } from './HariHaraLogo';
 import { useShop } from '../context/ShopContext';
 
@@ -184,7 +185,7 @@ export function Footer() {
                   className="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-3 rounded-lg text-xs transition-colors shadow-xs active:scale-98"
                   aria-label="Chat on WhatsApp"
                 >
-                  <MessageCircle className="w-3.5 h-3.5 shrink-0" />
+                  <WhatsAppIcon className="w-3.5 h-3.5 shrink-0" />
                   <span>Chat on WhatsApp</span>
                 </a>
 

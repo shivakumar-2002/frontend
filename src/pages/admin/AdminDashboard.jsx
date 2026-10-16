@@ -9,12 +9,12 @@ import {
   Sparkles,
   PlusCircle,
   ArrowRight,
-  MessageCircle,
   Clock,
   Eye,
   AlertCircle,
   Scale,
 } from 'lucide-react';
+import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { api } from '../../services/api';
 import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
 
@@ -207,7 +207,7 @@ export function AdminDashboard() {
                         className="p-1.5 rounded-lg bg-emerald-900/50 hover:bg-emerald-800 text-emerald-300 transition-colors"
                         title="Chat on WhatsApp"
                       >
-                        <MessageCircle className="w-4 h-4" />
+                        <WhatsAppIcon className="w-4 h-4" />
                       </a>
                     </div>
                   </div>

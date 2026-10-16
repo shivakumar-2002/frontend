@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle, Eye, Sparkles, ShieldCheck, Scale } from 'lucide-react';
+import { Eye, Sparkles, ShieldCheck, Scale } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { useShop } from '../context/ShopContext';
 import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../utils/imageUrl';
 
@@ -133,7 +134,7 @@ export function ProductCard({ product }) {
             className="flex items-center justify-center gap-1 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 py-2.5 px-2 rounded-xl transition-colors cursor-pointer shadow-xs min-h-[44px]"
             title="Enquire on WhatsApp"
           >
-            <MessageCircle className="w-3.5 h-3.5" />
+            <WhatsAppIcon className="w-3.5 h-3.5" />
             <span>Enquire</span>
           </button>
         </div>

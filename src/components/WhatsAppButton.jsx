@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageCircle } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { useShop } from '../context/ShopContext';
 
 export function WhatsAppButton({ customMessage = null }) {
@@ -27,7 +27,7 @@ export function WhatsAppButton({ customMessage = null }) {
         aria-label="Contact on WhatsApp"
       >
         <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 rounded-full animate-ping"></span>
-        <MessageCircle className="w-7 h-7" />
+        <WhatsAppIcon className="w-7 h-7" />
       </button>
     </div>
   );
