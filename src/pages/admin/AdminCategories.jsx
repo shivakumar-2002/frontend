@@ -17,6 +17,7 @@ import {
 import { api } from '../../services/api';
 import { useShop } from '../../context/ShopContext';
 import { validateText } from '../../utils/validators';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
 
 export function AdminCategories() {
   const { refreshShopData } = useShop();
@@ -154,7 +155,7 @@ export function AdminCategories() {
   };
 
   const getCategoryFallbackPhoto = (cat) => {
-    if (cat?.imageUrl && !cat.imageUrl.includes('unsplash.com')) return cat.imageUrl;
+    if (cat?.imageUrl && !cat.imageUrl.includes('unsplash.com')) return getImageUrl(cat.imageUrl);
     const s = (cat?.slug || '').toLowerCase();
     if (s.includes('ring')) return '/category-gold-rings.jpg';
     if (s.includes('kammal') || s.includes('jhumka')) return '/category-kammalbuttas.jpg';
@@ -218,6 +219,7 @@ export function AdminCategories() {
                         src={getCategoryFallbackPhoto(cat)}
                         alt={cat.name}
                         className="w-12 h-12 rounded-lg object-cover bg-stone-950 border border-stone-800 shrink-0"
+                        onError={handleImageError}
                       />
                       <div>
                         <h3 className="font-bold text-sm text-stone-100 font-serif">{cat.name}</h3>
@@ -259,17 +261,19 @@ export function AdminCategories() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(cat)}
-                    className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300"
+                    className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors cursor-pointer"
                     title="Edit Category"
+                    aria-label="Edit Category"
                   >
-                    <Edit2 className="w-3.5 h-3.5" />
+                    <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(cat)}
-                    className="p-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/40"
+                    className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/40 transition-colors cursor-pointer"
                     title="Delete Category"
+                    aria-label="Delete Category"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -349,9 +353,10 @@ export function AdminCategories() {
                 {formData.imageUrl && (
                   <div className="relative aspect-video rounded-xl overflow-hidden mb-2.5 bg-stone-950 border border-amber-500/30">
                     <img
-                      src={formData.imageUrl}
+                      src={getImageUrl(formData.imageUrl)}
                       alt="Category Preview"
                       className="w-full h-full object-cover"
+                      onError={handleImageError}
                     />
                     <button
                       type="button"

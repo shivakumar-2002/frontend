@@ -13,6 +13,7 @@ import {
 import { api } from '../../services/api';
 import { useShop } from '../../context/ShopContext';
 import { validateText } from '../../utils/validators';
+import { DEFAULT_SERVICES } from '../customer/Services';
 
 export function AdminServices() {
   const { refreshShopData } = useShop();
@@ -147,6 +148,28 @@ export function AdminServices() {
     }
   };
 
+  const handleSeedDefaultServices = async () => {
+    try {
+      setLoading(true);
+      for (const s of DEFAULT_SERVICES) {
+        await api.createService({
+          title: s.title,
+          description: s.description,
+          iconName: s.iconName,
+          imageUrl: s.imageUrl,
+          isPublished: true,
+          sortOrder: s.sortOrder,
+        });
+      }
+      await loadServices();
+      refreshShopData();
+    } catch (err) {
+      alert(`Failed to load default services: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Header */}
@@ -160,13 +183,15 @@ export function AdminServices() {
           </p>
         </div>
 
-        <button
-          onClick={openAddModal}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-semibold text-xs shadow-md transition-all self-start sm:self-auto cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add New Service</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={openAddModal}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-semibold text-xs shadow-md transition-all self-start sm:self-auto cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add New Service</span>
+          </button>
+        </div>
       </div>
 
       {/* Services Grid */}
@@ -174,6 +199,22 @@ export function AdminServices() {
         <div className="text-center py-12 text-xs text-stone-400">Loading services...</div>
       ) : error ? (
         <div className="text-center py-12 text-xs text-red-400">{error}</div>
+      ) : services.length === 0 ? (
+        <div className="bg-stone-900 rounded-2xl border border-stone-800 p-8 text-center space-y-4">
+          <Wrench className="w-10 h-10 text-amber-500 mx-auto" />
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-stone-200">No Custom Services in Database</h3>
+            <p className="text-xs text-stone-400 max-w-md mx-auto">
+              The customer portal is currently active and displaying the 6 authentic master craft services (Baby Ear Pogulu, Pure Silver Mettalu, Pusthela Thadu, etc.). You can click below to store them directly into the database so you can edit or customize them.
+            </p>
+          </div>
+          <button
+            onClick={handleSeedDefaultServices}
+            className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs shadow-md transition-colors cursor-pointer"
+          >
+            Save 6 Master Craft Services to Database
+          </button>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((srv) => (
@@ -215,17 +256,19 @@ export function AdminServices() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(srv)}
-                    className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300"
+                    className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors cursor-pointer"
                     title="Edit Service"
+                    aria-label="Edit Service"
                   >
-                    <Edit2 className="w-3.5 h-3.5" />
+                    <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(srv)}
-                    className="p-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/40"
+                    className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/40 transition-colors cursor-pointer"
                     title="Delete Service"
+                    aria-label="Delete Service"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>

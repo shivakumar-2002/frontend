@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { useShop } from '../../context/ShopContext';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
 
 export function AdminProducts() {
   const { categories } = useShop();
@@ -114,7 +115,7 @@ export function AdminProducts() {
             placeholder="Search by title, purity..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 rounded-lg bg-stone-950 border border-stone-700 text-stone-200 focus:outline-none focus:border-amber-500"
+            className="w-full pl-9 pr-3 py-2.5 min-h-[44px] rounded-lg bg-stone-950 border border-stone-700 text-stone-200 focus:outline-none focus:border-amber-500"
           />
         </div>
 
@@ -122,7 +123,7 @@ export function AdminProducts() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-stone-950 border border-stone-700 text-stone-200 focus:outline-none focus:border-amber-500"
+            className="w-full px-3 py-2.5 min-h-[44px] rounded-lg bg-stone-950 border border-stone-700 text-stone-200 focus:outline-none focus:border-amber-500 cursor-pointer"
           >
             <option value="ALL">All Categories</option>
             {categories.map((c) => (
@@ -137,7 +138,7 @@ export function AdminProducts() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-stone-950 border border-stone-700 text-stone-200 focus:outline-none focus:border-amber-500"
+            className="w-full px-3 py-2.5 min-h-[44px] rounded-lg bg-stone-950 border border-stone-700 text-stone-200 focus:outline-none focus:border-amber-500 cursor-pointer"
           >
             <option value="ALL">All Publication States</option>
             <option value="PUBLISHED">Published Only</option>
@@ -172,9 +173,10 @@ export function AdminProducts() {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <img
-                          src={prod.images?.[0]?.imageUrl || '/luxury-hero-banner.jpg'}
+                          src={getImageUrl(prod.images?.[0]?.imageUrl || DEFAULT_JEWELLERY_IMAGE)}
                           alt={prod.name}
                           className="w-12 h-12 rounded-lg object-cover bg-stone-950 border border-stone-800 shrink-0"
+                          onError={handleImageError}
                         />
                         <div className="max-w-xs">
                           <span className="font-bold text-stone-100 block line-clamp-1">{prod.name}</span>
@@ -223,7 +225,7 @@ export function AdminProducts() {
                     <td className="py-3 px-4">
                       <button
                         onClick={() => handleToggleStatus(prod)}
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase transition-colors cursor-pointer ${
+                        className={`min-h-[32px] px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wide uppercase transition-colors cursor-pointer ${
                           prod.publicationStatus === 'PUBLISHED'
                             ? 'bg-emerald-950 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60'
                             : 'bg-stone-800 text-stone-400 hover:bg-stone-700'
@@ -240,26 +242,29 @@ export function AdminProducts() {
                         <Link
                           to={`/product/${prod.id}`}
                           target="_blank"
-                          className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white"
+                          className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white transition-colors"
                           title="Preview on Public Website"
+                          aria-label="Preview on Public Website"
                         >
-                          <Eye className="w-3.5 h-3.5" />
+                          <Eye className="w-4 h-4" />
                         </Link>
 
                         <Link
                           to={`/admin/products/edit/${prod.id}`}
-                          className="p-1.5 rounded-lg bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-800/50"
+                          className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-800/50 transition-colors"
                           title="Edit Details"
+                          aria-label="Edit Details"
                         >
-                          <Edit2 className="w-3.5 h-3.5" />
+                          <Edit2 className="w-4 h-4" />
                         </Link>
 
                         <button
                           onClick={() => setProductToDelete(prod)}
-                          className="p-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/50 cursor-pointer"
+                          className="min-w-[36px] min-h-[36px] flex items-center justify-center p-2 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/50 cursor-pointer transition-colors"
                           title="Delete Product"
+                          aria-label="Delete Product"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

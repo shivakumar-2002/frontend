@@ -16,6 +16,64 @@ import {
 import { useShop } from '../../context/ShopContext';
 import { EnquiryModal } from '../../components/EnquiryModal';
 import { HallmarkGuaranteeCard } from '../../components/HallmarkGuaranteeCard';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
+
+export const DEFAULT_SERVICES = [
+  {
+    id: 'srv-baby-pogulu',
+    title: 'Baby Ear Pogulu & Kids Ear Tops (పాపలకు చెవి పోగులు & హ్యాండ్ సర్వీస్)',
+    description: 'Handcrafted pure 22K gold wire Pogulu (ముద్దు పోగులు) and baby screw-back tops. We provide a gentle, hygienic, and highly responsible hand-service to safely and painlessly fit or pierce ear tops for newborn babies and young children with complete care.',
+    iconName: 'HeartHandshake',
+    imageUrl: '/service-baby-pogulu-ear-tops.jpg',
+    pictureTag: '📸 Baby Ear Pogulu Gentle Hand Fitting',
+    sortOrder: 1,
+  },
+  {
+    id: 'srv-silver-mettalu',
+    title: 'Pure Silver Mettalu (వెండి మట్టెలు - Silver Leg Rings for Women)',
+    description: 'Handcrafted pure silver Mettalu (toe rings) and silver leg chains (pattilu) for married women and brides. Hand-carved with traditional ethnic patterns, carefully sized and hand-fitted to feet with responsibility for perfect comfort and purity.',
+    iconName: 'Gift',
+    imageUrl: '/service-silver-mettalu-toe-rings.jpg',
+    pictureTag: '📸 Pure Silver Mettalu & Toe Fitting',
+    sortOrder: 2,
+  },
+  {
+    id: 'srv-pusthela-thadu',
+    title: 'Pusthela Thadu Chuttudu (పుస్తెల తాడు చుట్టుడు - Mangalasuthram)',
+    description: 'Sacred manual gold wire wrapping and threading of women’s Mangalasuthram. Master goldsmith carefully strings the twin Pusthelu (bottu cups), natural coral beads, and black beads with pure 22K gold wire for sacred strength and lifetime durability.',
+    iconName: 'Sparkles',
+    imageUrl: '/service-pusthela-thadu-chuttudu.jpg',
+    pictureTag: '📸 Pusthela Thadu Gold Wire Wrapping',
+    sortOrder: 3,
+  },
+  {
+    id: 'srv-exchange',
+    title: 'Old Gold & Silver Exchange (పాత బంగారం & వెండి మార్పిడి)',
+    description: 'Exchange your old or inherited gold and silver ornaments at fair live bullion market rates. Computerized purity analysis, live crucible melting, and digital weighing right in front of your eyes with zero hidden deduction.',
+    iconName: 'RefreshCw',
+    imageUrl: '/service-gold-melting-testing.jpg',
+    pictureTag: '📸 Genuine Gold Melting & Scale Assay',
+    sortOrder: 4,
+  },
+  {
+    id: 'srv-custom',
+    title: 'Custom 22K Gold Ornaments & Nakshi Harams (కస్టమ్ నగల తయారీ)',
+    description: 'Bring any photo, sketch, or heirloom idea. Master craftsman L. Srinivasa Chary custom-crafts 91.6 KDM hallmarked royal bridal chokers, temple Kasu Harams, and bangles to your desired grams and budget.',
+    iconName: 'Palette',
+    imageUrl: '/service-custom-making.jpg',
+    pictureTag: '📸 22K Temple Gold Nakshi Handcrafting',
+    sortOrder: 5,
+  },
+  {
+    id: 'srv-repair',
+    title: 'Jewellery Repair, Sizing & Polishing (నగల మరమ్మతులు & సైజింగ్)',
+    description: 'Quick in-house repair services including gold chain soldering, ring & bangle reshaping on steel mandrels with jeweler loupe, stone resetting, lock replacements, and ultrasonic gold electro-polishing.',
+    iconName: 'Wrench',
+    imageUrl: '/service-jewellery-repair-sizing.jpg',
+    pictureTag: '📸 Mandrel Sizing & Workshop Solder',
+    sortOrder: 6,
+  },
+];
 
 export function Services() {
   const { services, settings } = useShop();
@@ -51,17 +109,17 @@ export function Services() {
   };
 
   const getServicePhoto = (srv) => {
-    const title = srv.title.toLowerCase();
-    if (title.includes('pusthela') || title.includes('mangalasuthram') || title.includes('chuttudu')) {
-      return '/service-pusthela-thadu-chuttudu.jpg';
-    }
-    if (title.includes('pogulu') || title.includes('baby') || title.includes('kids') || title.includes('పాపలకు')) {
+    const title = (srv.title || '').toLowerCase();
+    if (title.includes('pogulu') || title.includes('baby') || title.includes('kids') || title.includes('పాపలకు') || title.includes('పోగులు')) {
       return '/service-baby-pogulu-ear-tops.jpg';
     }
-    if (title.includes('mettalu') || title.includes('mettelu') || title.includes('toe ring') || title.includes('వెండి మట్టెలు')) {
+    if (title.includes('mettalu') || title.includes('mettelu') || title.includes('toe ring') || title.includes('వెండి మట్టెలు') || title.includes('మట్టెలు')) {
       return '/service-silver-mettalu-toe-rings.jpg';
     }
-    if (title.includes('exchange') || title.includes('మార్పిడి')) {
+    if (title.includes('pusthela') || title.includes('mangalasuthram') || title.includes('chuttudu') || title.includes('పుస్తెల')) {
+      return '/service-pusthela-thadu-chuttudu.jpg';
+    }
+    if (title.includes('exchange') || title.includes('మార్పిడి') || title.includes('melting')) {
       return '/service-gold-melting-testing.jpg';
     }
     if (title.includes('custom') || title.includes('నగల తయారీ') || title.includes('nakshi')) {
@@ -71,21 +129,21 @@ export function Services() {
       return '/service-jewellery-repair-sizing.jpg';
     }
     if (srv.imageUrl && !srv.imageUrl.includes('unsplash.com')) {
-      return srv.imageUrl;
+      return getImageUrl(srv.imageUrl);
     }
     return '/service-pusthela-thadu-chuttudu.jpg';
   };
 
   const getPictureTag = (srv) => {
-    const title = srv.title.toLowerCase();
-    if (title.includes('pusthela') || title.includes('mangalasuthram') || title.includes('chuttudu')) {
-      return '📸 Pusthela Thadu Gold Wire Wrapping';
-    }
-    if (title.includes('pogulu') || title.includes('baby') || title.includes('kids')) {
+    const title = (srv.title || '').toLowerCase();
+    if (title.includes('pogulu') || title.includes('baby') || title.includes('kids') || title.includes('పోగులు')) {
       return '📸 Baby Ear Pogulu Gentle Hand Fitting';
     }
-    if (title.includes('mettalu') || title.includes('toe ring')) {
+    if (title.includes('mettalu') || title.includes('toe ring') || title.includes('మట్టెలు')) {
       return '📸 Hand-Carved Pure Silver Mettalu';
+    }
+    if (title.includes('pusthela') || title.includes('mangalasuthram') || title.includes('chuttudu')) {
+      return '📸 Pusthela Thadu Gold Wire Wrapping';
     }
     if (title.includes('exchange')) {
       return '📸 Genuine Gold Melting & Scale Assay';
@@ -96,8 +154,17 @@ export function Services() {
     if (title.includes('repair')) {
       return '📸 Mandrel Sizing & Workshop Solder';
     }
-    return '📸 Genuine Workshop Craftsmanship';
+    return srv.pictureTag || '📸 Genuine Workshop Craftsmanship';
   };
+
+  // Display services: use backend services or fallback to rich default services
+  const displayServices = (services && services.length > 0)
+    ? services.map((srv) => ({
+        ...srv,
+        imageUrl: getServicePhoto(srv),
+        pictureTag: getPictureTag(srv),
+      }))
+    : DEFAULT_SERVICES;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-16">
@@ -125,7 +192,7 @@ export function Services() {
 
       {/* Services Grid with 6 Distinct Practical Photos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {services.map((srv) => (
+        {displayServices.map((srv) => (
           <div
             key={srv.id}
             className="bg-white/85 backdrop-blur-md rounded-2xl border border-amber-200/80 hover:border-amber-400 p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
@@ -134,13 +201,14 @@ export function Services() {
               {/* Photo with Identification Tag */}
               <div className="aspect-16/9 rounded-xl overflow-hidden mb-4 bg-stone-100 border border-amber-200/80 relative group">
                 <img
-                  src={getServicePhoto(srv)}
+                  src={srv.imageUrl || getServicePhoto(srv)}
                   alt={srv.title}
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={handleImageError}
                 />
                 <span className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-white/95 text-[11px] text-amber-900 font-bold backdrop-blur-md border border-amber-300 shadow-md">
-                  {getPictureTag(srv)}
+                  {srv.pictureTag || getPictureTag(srv)}
                 </span>
               </div>
 

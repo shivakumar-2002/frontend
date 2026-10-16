@@ -15,6 +15,7 @@ import {
 import { api } from '../../services/api';
 import { useShop } from '../../context/ShopContext';
 import { validateText, validatePositiveNumber, validateStrictlyPositiveNumber } from '../../utils/validators';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
 
 export function AdminProductForm() {
   const { id } = useParams();
@@ -676,18 +677,18 @@ export function AdminProductForm() {
               </div>
 
               {/* Or paste external image URL */}
-              <div className="pt-3 border-t border-stone-800 max-w-md mx-auto flex gap-2">
+              <div className="pt-3 border-t border-stone-800 max-w-md mx-auto flex flex-col sm:flex-row gap-2">
                 <input
                   type="url"
                   placeholder="Or paste external image URL..."
                   value={newImageUrl}
                   onChange={(e) => setNewImageUrl(e.target.value)}
-                  className="flex-1 px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-700 text-stone-200 text-xs"
+                  className="flex-1 px-3 py-2 min-h-[42px] rounded-lg bg-stone-900 border border-stone-700 text-stone-200 text-xs"
                 />
                 <button
                   type="button"
                   onClick={handleAddImageUrl}
-                  className="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-lg text-xs font-semibold"
+                  className="px-4 py-2 min-h-[42px] bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-lg text-xs font-semibold cursor-pointer shrink-0"
                 >
                   Add URL
                 </button>
@@ -703,9 +704,10 @@ export function AdminProductForm() {
                     className="relative group rounded-xl overflow-hidden aspect-square bg-stone-950 border border-stone-800 shadow-sm"
                   >
                     <img
-                      src={img.imageUrl}
+                      src={getImageUrl(img.imageUrl)}
                       alt={img.altText || `Product Image ${idx + 1}`}
                       className="w-full h-full object-cover"
+                      onError={handleImageError}
                     />
 
                     {/* Primary badge */}
@@ -715,14 +717,15 @@ export function AdminProductForm() {
                       </span>
                     )}
 
-                    {/* Remove button */}
+                    {/* Remove button - visible by default on mobile/touch, hover on desktop */}
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(idx)}
-                      className="absolute top-2 right-2 p-1.5 bg-red-950/80 hover:bg-red-900 text-red-200 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                      className="absolute top-2 right-2 min-w-[36px] min-h-[36px] p-2 bg-red-950/90 hover:bg-red-900 text-red-200 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer shadow-md"
                       title="Remove image"
+                      aria-label="Remove image"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}

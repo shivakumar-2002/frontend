@@ -17,6 +17,7 @@ import { api } from '../../services/api';
 import { useShop } from '../../context/ShopContext';
 import { ProductCard } from '../../components/ProductCard';
 import { EnquiryModal } from '../../components/EnquiryModal';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
 
 export function ProductDetails() {
   const { id } = useParams();
@@ -148,9 +149,10 @@ export function ProductDetails() {
           {/* Main Selected Image */}
           <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-white border-2 border-amber-300 shadow-xl">
             <img
-              src={currentImage.imageUrl}
+              src={getImageUrl(currentImage.imageUrl)}
               alt={currentImage.altText || product.name}
               className="w-full h-full object-cover object-center"
+              onError={handleImageError}
             />
 
             {/* Badges */}
@@ -190,9 +192,10 @@ export function ProductDetails() {
                   }`}
                 >
                   <img
-                    src={img.imageUrl}
+                    src={getImageUrl(img.imageUrl)}
                     alt={img.altText || `View ${idx + 1}`}
                     className="w-full h-full object-cover"
+                    onError={handleImageError}
                   />
                 </button>
               ))}

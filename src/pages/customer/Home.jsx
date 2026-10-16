@@ -17,6 +17,7 @@ import {
 import { useShop } from '../../context/ShopContext';
 import { EnquiryModal } from '../../components/EnquiryModal';
 import { HallmarkGuaranteeCard } from '../../components/HallmarkGuaranteeCard';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
 
 export function Home() {
   const { settings, categories, services } = useShop();
@@ -24,44 +25,98 @@ export function Home() {
 
   const heroTitle = settings?.heroTitle || 'Sacred Craftsmanship in 91.6 Hallmarked Gold & Silver';
   const heroDescription = settings?.heroDescription || 'Over 25 years of master jewellery artistry in Uppuguda, Hyderabad by Prop. L. Srinivasa Chary. Specializing in royal bridal sets, temple kasu harams, and bespoke gold ornaments.';
-  const heroImage =
+  const heroImage = getImageUrl(
     settings?.heroImageUrl && !settings.heroImageUrl.includes('photo-1599643478518')
       ? settings.heroImageUrl
-      : '/luxury-hero-banner.jpg';
+      : '/luxury-hero-banner.jpg'
+  );
   const whatsappNum = settings?.whatsappNumber?.replace(/\D/g, '') || '919848543615';
 
-  const getCategoryPhoto = (cat) => {
-    // If admin uploaded a custom photo for this category/slot, always use it!
-    if (cat?.imageUrl && !cat.imageUrl.includes('unsplash.com')) {
-      return cat.imageUrl;
-    }
-    const slug = (cat?.slug || '').toLowerCase();
-    const name = (cat?.name || '').toLowerCase();
-    if (slug.includes('ring') || name.includes('ring') || name.includes('ఉంగరాలు')) {
-      return '/category-gold-rings.jpg';
-    }
-    if (slug.includes('kammal') || slug.includes('jhumka') || name.includes('kammal') || name.includes('jhumka') || name.includes('బుట్టలు') || name.includes('earring')) {
-      return '/category-kammalbuttas.jpg';
-    }
-    if (slug.includes('top') || slug.includes('pogulu') || name.includes('top') || name.includes('పోగులు')) {
-      return '/category-ear-tops.jpg';
-    }
-    if (slug.includes('chain') || slug.includes('locket') || name.includes('chain') || name.includes('locket') || name.includes('లాకెట్')) {
-      return '/category-chains-lockets.jpg';
-    }
-    if (slug.includes('bangle') || slug.includes('kada') || name.includes('bangle') || name.includes('గాజులు')) {
-      return '/category-bangles-kadas.jpg';
-    }
-    if (slug.includes('necklace') || slug.includes('haram') || name.includes('necklace') || name.includes('హారాలు') || slug.includes('bridal')) {
-      return '/category-necklaces-harams.jpg';
-    }
-    return '/category-gold-rings.jpg';
-  };
+  const SIX_HOME_SLOTS = [
+    {
+      key: 'rings',
+      name: 'Gold Designer Rings',
+      slug: 'rings',
+      photo: '/category-gold-rings.jpg',
+      tag: '91.6 KDM Pure Gold',
+      keywords: ['ring', 'rings', 'ఉంగరాలు'],
+    },
+    {
+      key: 'kammalbuttas',
+      name: 'Kammalbuttas & Jhumkas',
+      slug: 'kammalbuttas',
+      photo: '/category-kammalbuttas.jpg',
+      tag: 'Temple & Royal Bells',
+      keywords: ['kammal', 'jhumka', 'butta', 'బుట్టలు', 'earring'],
+    },
+    {
+      key: 'ear-tops',
+      name: 'Gold Ear Tops & Pogulu',
+      slug: 'ear-tops',
+      photo: '/category-ear-tops.jpg',
+      tag: 'Baby Pogulu & Tops',
+      keywords: ['top', 'pogulu', 'tops', 'పోగులు', 'ear-top'],
+    },
+    {
+      key: 'chains-lockets',
+      name: 'Gold Chains & Lockets',
+      slug: 'chains-lockets',
+      photo: '/category-chains-lockets.jpg',
+      tag: 'Daily & Bridal Chains',
+      keywords: ['chain', 'chains', 'locket', 'lockets', 'గొలుసులు', 'లాకెట్'],
+    },
+    {
+      key: 'bangles-kadas',
+      name: 'Bangles & Kadas',
+      slug: 'bangles',
+      photo: '/category-bangles-kadas.jpg',
+      tag: 'Solid & Nakshi Kadas',
+      keywords: ['bangle', 'bangles', 'kada', 'kadas', 'గాజులు', 'కడియాలు'],
+    },
+    {
+      key: 'necklaces-harams',
+      name: 'Royal Necklaces & Harams',
+      slug: 'necklaces',
+      photo: '/category-necklaces-harams.jpg',
+      tag: 'Bridal & Antique Harams',
+      keywords: ['necklace', 'necklaces', 'necklas', 'necklasw', 'necklase', 'haram', 'harams', 'bride', 'bridal', 'నెక్లెస్', 'హారాలు'],
+    },
+  ];
 
-  // Strictly fix to exactly 6 display categories for the Home page Pure Gold showcase
-  const homeCategories = categories
-    .filter((c) => !c.name?.toLowerCase().includes('silver') && !c.slug?.toLowerCase().includes('silver'))
-    .slice(0, 6);
+  // Dynamically resolve exactly 6 showcase slots for Home page
+  const homeDisplayCategories = SIX_HOME_SLOTS.map((slot) => {
+    // 1. Try to find a matching category from backend categories
+    const matchedCategory = categories.find((c) => {
+      const s = (c.slug || '').toLowerCase();
+      const n = (c.name || '').toLowerCase();
+      return slot.keywords.some((kw) => s.includes(kw) || n.includes(kw));
+    });
+
+    if (matchedCategory) {
+      const customPhoto = (matchedCategory.imageUrl && !matchedCategory.imageUrl.includes('unsplash.com'))
+        ? getImageUrl(matchedCategory.imageUrl)
+        : slot.photo;
+
+      return {
+        id: matchedCategory.id,
+        name: matchedCategory.name || slot.name,
+        slug: matchedCategory.slug || slot.slug,
+        imageUrl: customPhoto,
+        tag: slot.tag,
+        productCount: matchedCategory.productCount ?? matchedCategory._count?.products ?? null,
+      };
+    }
+
+    // 2. Default slot with authentic previous picture
+    return {
+      id: slot.key,
+      name: slot.name,
+      slug: slot.slug,
+      imageUrl: slot.photo,
+      tag: slot.tag,
+      productCount: null,
+    };
+  });
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-16">
@@ -73,6 +128,7 @@ export function Home() {
             src={heroImage}
             alt="Ultra-Luxury Indian Gold Jewellery"
             className="w-full h-full object-cover object-right lg:object-[82%_center] opacity-90 brightness-95"
+            onError={handleImageError}
           />
 
           {/* Clean Left-Side Half-White Fade - High Contrast on Mobile & Desktop */}
@@ -209,23 +265,24 @@ export function Home() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
-          {homeCategories.map((cat) => (
+          {homeDisplayCategories.map((cat) => (
             <Link
               key={cat.id}
               to={`/collections/${cat.slug}`}
               className="group relative rounded-2xl overflow-hidden aspect-square bg-stone-100 border border-amber-200/80 shadow-md hover:border-amber-400 hover:shadow-2xl transition-all duration-300"
             >
               <img
-                src={getCategoryPhoto(cat)}
+                src={cat.imageUrl}
                 alt={cat.name}
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                onError={handleImageError}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/30 to-transparent"></div>
 
               <div className="absolute inset-x-0 bottom-0 p-3 sm:p-5 text-white">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-amber-300 block mb-0.5">
-                  91.6 KDM Pure Gold
+                  {cat.tag || '91.6 KDM Pure Gold'}
                 </span>
                 <h3 className="text-xs sm:text-base font-bold font-serif text-amber-100 group-hover:text-white transition-colors">
                   {cat.name}

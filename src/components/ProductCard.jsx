@@ -2,12 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, Eye, Sparkles, ShieldCheck, Scale } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../utils/imageUrl';
 
 export function ProductCard({ product }) {
   const { settings } = useShop();
   const whatsappNum = settings?.whatsappNumber?.replace(/\D/g, '') || '919848543615';
 
-  const primaryImage = product.images?.[0]?.imageUrl || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80';
+  const rawImage = product.images?.[0]?.imageUrl || DEFAULT_JEWELLERY_IMAGE;
+  const primaryImage = getImageUrl(rawImage);
 
   const handleWhatsAppEnquiry = (e) => {
     e.preventDefault();
@@ -30,6 +32,7 @@ export function ProductCard({ product }) {
           alt={product.name}
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          onError={handleImageError}
         />
 
         {/* Hover overlay sheen on desktop */}

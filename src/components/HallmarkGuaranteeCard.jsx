@@ -7,7 +7,6 @@ import {
   BadgeCheck,
   MessageCircle,
   Sparkles,
-  Maximize2,
   X,
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
@@ -58,16 +57,6 @@ export function HallmarkGuaranteeCard({ className = '' }) {
               className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
               onClick={() => setImageModalOpen(true)}
             />
-
-            {/* Click to Zoom Pill */}
-            <button
-              onClick={() => setImageModalOpen(true)}
-              className="absolute top-3 right-3 min-h-[44px] px-3.5 py-2 rounded-full bg-white/95 backdrop-blur-md text-xs font-bold text-amber-900 border border-amber-300 flex items-center gap-1.5 shadow-md hover:bg-white transition-colors cursor-pointer active:scale-95"
-              aria-label="Tap to Enlarge Guarantee Card"
-            >
-              <Maximize2 className="w-4 h-4" />
-              <span>Tap to Enlarge</span>
-            </button>
 
             {/* Bottom Card Ribbon */}
             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-stone-950 via-stone-950/90 to-transparent p-4 pt-8">

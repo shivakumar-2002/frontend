@@ -1,37 +1,46 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+// Frontend API Service for Hari Hara Jewellery Works
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
 
 /**
- * Universal API fetch helper
+ * Universal fetch wrapper supporting JSON & FormData, credentials, and token auth.
  */
 async function request(endpoint, options = {}) {
-  const url = `${API_BASE}${endpoint}`;
-  
-  // Retrieve token from localStorage fallback for authorization header
-  const token = localStorage.getItem('hh_admin_token');
-  
-  const headers = {
-    ...options.headers,
-  };
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${API_BASE_URL}${cleanEndpoint}`;
 
-  if (token && !headers['Authorization']) {
+  const headers = { ...(options.headers || {}) };
+
+  // Attach admin bearer token if available
+  const token = localStorage.getItem('hh_admin_token');
+  if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  // If body is NOT FormData, set JSON content-type
-  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+  let body = options.body;
+  // If body is a plain object, stringify to JSON and set Content-Type
+  if (body && !(body instanceof FormData) && typeof body === 'object') {
     headers['Content-Type'] = 'application/json';
+    body = JSON.stringify(body);
   }
 
   const response = await fetch(url, {
     ...options,
     headers,
-    credentials: 'include', // Sends HTTP-Only cookies
+    body,
+    credentials: 'include',
   });
 
-  const data = await response.json().catch(() => ({}));
+  const contentType = response.headers.get('content-type') || '';
+  let data;
+  if (contentType.includes('application/json')) {
+    data = await response.json();
+  } else {
+    const text = await response.text();
+    data = { success: response.ok, message: text };
+  }
 
   if (!response.ok) {
-    const error = new Error(data.message || `Request failed with status ${response.status}`);
+    const error = new Error(data?.message || `Request failed with status ${response.status}`);
     error.status = response.status;
     error.data = data;
     throw error;
@@ -40,51 +49,243 @@ async function request(endpoint, options = {}) {
   return data;
 }
 
-// ==========================================
-// PUBLIC CUSTOMER API
-// ==========================================
+/**
+ * Helper to construct URL query strings from an object
+ */
+function toQueryString(params = {}) {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      searchParams.append(key, value);
+    }
+  });
+  const qs = searchParams.toString();
+  return qs ? `?${qs}` : '';
+}
 
 export const api = {
-  // Products
-  getProducts: (params = {}) => {
-    const query = new URLSearchParams();
-    if (params.category) query.append('category', params.category);
-    if (params.search) query.append('search', params.search);
-    if (params.purity) query.append('purity', params.purity);
-    if (params.featured) query.append('featured', 'true');
-    if (params.newArrival) query.append('newArrival', 'true');
-    if (params.sort) query.append('sort', params.sort);
-    const qs = query.toString();
-    return request(`/products${qs ? `?${qs}` : ''}`);
+  // Base config helper
+  getBaseUrl: () => API_BASE_URL,
+
+  // ==========================================
+  // Authentication
+  // ==========================================
+  login: async (credentials) => {
+    const res = await request('/auth/login', {
+      method: 'POST',
+      body: credentials,
+    });
+    if (res?.token) {
+      localStorage.setItem('hh_admin_token', res.token);
+    }
+    return res;
   },
 
-  getProductById: (id) => request(`/products/${id}`),
+  logout: async () => {
+    try {
+      return await request('/auth/logout', { method: 'POST' });
+    } finally {
+      localStorage.removeItem('hh_admin_token');
+    }
+  },
 
-  // Categories
-  getCategories: () => request('/categories'),
-  getCategoryProducts: (slug) => request(`/categories/${slug}/products`),
+  getMe: async () => {
+    return request('/auth/me');
+  },
 
-  // Shop Settings & Services
-  getShopSettings: () => request('/shop-settings'),
-  getServices: () => request('/services'),
+  // ==========================================
+  // Public Products
+  // ==========================================
+  getProducts: async (params = {}) => {
+    return request(`/products${toQueryString(params)}`);
+  },
 
-  // Customer Enquiry Submission
-  submitEnquiry: (payload) => {
-    const isFormData = typeof FormData !== 'undefined' && payload instanceof FormData;
-    return request('/enquiries', {
+  getProductById: async (id) => {
+    return request(`/products/${id}`);
+  },
+
+  getProductBySlug: async (slug) => {
+    return request(`/products/${slug}`);
+  },
+
+  // ==========================================
+  // Admin Products
+  // ==========================================
+  getAdminProducts: async (params = {}) => {
+    return request(`/admin/products${toQueryString(params)}`);
+  },
+
+  getAdminProductById: async (id) => {
+    return request(`/admin/products/${id}`);
+  },
+
+  createProduct: async (productData) => {
+    return request('/admin/products', {
       method: 'POST',
-      body: isFormData ? payload : JSON.stringify(payload),
+      body: productData,
+    });
+  },
+
+  updateProduct: async (id, productData) => {
+    return request(`/admin/products/${id}`, {
+      method: 'PUT',
+      body: productData,
+    });
+  },
+
+  deleteProduct: async (id) => {
+    return request(`/admin/products/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  updateProductStatus: async (id, status) => {
+    return request(`/admin/products/${id}/status`, {
+      method: 'PATCH',
+      body: { status },
     });
   },
 
   // ==========================================
-  // AUTHENTICATION API
+  // Categories (Public & Admin)
   // ==========================================
+  getCategories: async () => {
+    return request('/categories');
+  },
 
+  getAdminCategories: async () => {
+    return request('/admin/categories');
+  },
+
+  createCategory: async (categoryData) => {
+    return request('/admin/categories', {
+      method: 'POST',
+      body: categoryData,
+    });
+  },
+
+  updateCategory: async (id, categoryData) => {
+    return request(`/admin/categories/${id}`, {
+      method: 'PUT',
+      body: categoryData,
+    });
+  },
+
+  deleteCategory: async (id) => {
+    return request(`/admin/categories/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // ==========================================
+  // Services (Public & Admin)
+  // ==========================================
+  getServices: async () => {
+    return request('/services');
+  },
+
+  getAdminServices: async () => {
+    return request('/admin/services');
+  },
+
+  createService: async (serviceData) => {
+    return request('/admin/services', {
+      method: 'POST',
+      body: serviceData,
+    });
+  },
+
+  updateService: async (id, serviceData) => {
+    return request(`/admin/services/${id}`, {
+      method: 'PUT',
+      body: serviceData,
+    });
+  },
+
+  deleteService: async (id) => {
+    return request(`/admin/services/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  updateServiceStatus: async (id, isPublished) => {
+    const payload = typeof isPublished === 'boolean' ? { isPublished } : isPublished;
+    return request(`/admin/services/${id}/status`, {
+      method: 'PATCH',
+      body: payload,
+    });
+  },
+
+  // ==========================================
+  // Shop Settings (Public & Admin)
+  // ==========================================
+  getShopSettings: async () => {
+    return request('/shop-settings');
+  },
+
+  getAdminShopSettings: async () => {
+    return request('/admin/shop-settings');
+  },
+
+  updateShopSettings: async (settingsData) => {
+    return request('/admin/shop-settings', {
+      method: 'PUT',
+      body: settingsData,
+    });
+  },
+
+  // ==========================================
+  // Enquiries (Public & Admin)
+  // ==========================================
+  submitEnquiry: async (enquiryData) => {
+    return request('/enquiries', {
+      method: 'POST',
+      body: enquiryData,
+    });
+  },
+
+  getAdminEnquiries: async (params = {}) => {
+    return request(`/admin/enquiries${toQueryString(params)}`);
+  },
+
+  updateEnquiryStatus: async (id, status) => {
+    return request(`/admin/enquiries/${id}/status`, {
+      method: 'PATCH',
+      body: { status },
+    });
+  },
+
+  updateEnquiryNotes: async (id, notes) => {
+    return request(`/admin/enquiries/${id}/notes`, {
+      method: 'PATCH',
+      body: { notes },
+    });
+  },
+
+  // ==========================================
+  // Admin Dashboard Statistics
+  // ==========================================
+  getAdminStats: async () => {
+    return request('/admin/stats');
+  },
+
+  // ==========================================
+  // Uploads
+  // ==========================================
+  uploadImages: async (formData) => {
+    return request('/admin/upload', {
+      method: 'POST',
+      body: formData,
+    });
+  },
+
+  // ==========================================
+  // Authentication (Admin)
+  // ==========================================
   login: async (credentials) => {
     const res = await request('/auth/login', {
       method: 'POST',
-      body: JSON.stringify(credentials),
+      body: credentials,
     });
     if (res.token) {
       localStorage.setItem('hh_admin_token', res.token);
@@ -98,141 +299,12 @@ export const api = {
     } finally {
       localStorage.removeItem('hh_admin_token');
     }
+    return { success: true };
   },
 
-  getMe: () => request('/auth/me'),
-
-  // ==========================================
-  // PROTECTED ADMIN API
-  // ==========================================
-
-  // Dashboard Statistics
-  getAdminStats: () => request('/admin/stats'),
-
-  // Admin Products
-  getAdminProducts: (params = {}) => {
-    const query = new URLSearchParams();
-    if (params.search) query.append('search', params.search);
-    if (params.category) query.append('category', params.category);
-    if (params.status) query.append('status', params.status);
-    if (params.page) query.append('page', params.page);
-    const qs = query.toString();
-    return request(`/admin/products${qs ? `?${qs}` : ''}`);
+  getMe: async () => {
+    return request('/auth/me');
   },
-
-  getAdminProductById: (id) => request(`/admin/products/${id}`),
-
-  createProduct: (payload) =>
-    request('/admin/products', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    }),
-
-  updateProduct: (id, payload) =>
-    request(`/admin/products/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-    }),
-
-  deleteProduct: (id) =>
-    request(`/admin/products/${id}`, {
-      method: 'DELETE',
-    }),
-
-  updateProductStatus: (id, publicationStatus) =>
-    request(`/admin/products/${id}/status`, {
-      method: 'PATCH',
-      body: JSON.stringify({ publicationStatus }),
-    }),
-
-  // Admin Categories
-  getAdminCategories: () => request('/admin/categories'),
-
-  createCategory: (payload) =>
-    request('/admin/categories', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    }),
-
-  updateCategory: (id, payload) =>
-    request(`/admin/categories/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-    }),
-
-  deleteCategory: (id) =>
-    request(`/admin/categories/${id}`, {
-      method: 'DELETE',
-    }),
-
-  // Admin Image Uploads
-  uploadImages: (formData) =>
-    request('/admin/upload', {
-      method: 'POST',
-      body: formData,
-    }),
-
-  deleteImage: (publicId) =>
-    request(`/admin/images/${encodeURIComponent(publicId)}`, {
-      method: 'DELETE',
-    }),
-
-  // Admin Enquiries
-  getAdminEnquiries: (params = {}) => {
-    const query = new URLSearchParams();
-    if (params.status) query.append('status', params.status);
-    if (params.search) query.append('search', params.search);
-    if (params.page) query.append('page', params.page);
-    const qs = query.toString();
-    return request(`/admin/enquiries${qs ? `?${qs}` : ''}`);
-  },
-
-  getAdminEnquiryById: (id) => request(`/admin/enquiries/${id}`),
-
-  updateEnquiryStatus: (id, status) =>
-    request(`/admin/enquiries/${id}/status`, {
-      method: 'PATCH',
-      body: JSON.stringify({ status }),
-    }),
-
-  updateEnquiryNotes: (id, internalNotes) =>
-    request(`/admin/enquiries/${id}/notes`, {
-      method: 'PATCH',
-      body: JSON.stringify({ internalNotes }),
-    }),
-
-  // Admin Shop Settings
-  getAdminShopSettings: () => request('/admin/shop-settings'),
-
-  updateShopSettings: (payload) =>
-    request('/admin/shop-settings', {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-    }),
-
-  // Admin Shop Services
-  getAdminServices: () => request('/admin/services'),
-
-  createService: (payload) =>
-    request('/admin/services', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    }),
-
-  updateService: (id, payload) =>
-    request(`/admin/services/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-    }),
-
-  deleteService: (id) =>
-    request(`/admin/services/${id}`, {
-      method: 'DELETE',
-    }),
-
-  updateServiceStatus: (id, isPublished) =>
-    request(`/admin/services/${id}/status`, {
-      method: 'PATCH',
-      body: JSON.stringify({ isPublished }),
-    }),
 };
+
+export default api;

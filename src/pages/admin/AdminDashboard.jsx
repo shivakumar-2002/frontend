@@ -16,6 +16,7 @@ import {
   Scale,
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { getImageUrl, handleImageError, DEFAULT_JEWELLERY_IMAGE } from '../../utils/imageUrl';
 
 export function AdminDashboard() {
   const [stats, setStats] = useState(null);
@@ -242,9 +243,10 @@ export function AdminDashboard() {
                 <div key={prod.id} className="py-3 flex items-center justify-between gap-3 text-xs">
                   <div className="flex items-center gap-3">
                     <img
-                      src={prod.images?.[0]?.imageUrl || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=200&q=80'}
+                      src={getImageUrl(prod.images?.[0]?.imageUrl || DEFAULT_JEWELLERY_IMAGE)}
                       alt={prod.name}
                       className="w-10 h-10 rounded-lg object-cover bg-stone-800 border border-stone-700 shrink-0"
+                      onError={handleImageError}
                     />
                     <div className="truncate max-w-[180px] sm:max-w-xs">
                       <div className="font-semibold text-stone-200 truncate">{prod.name}</div>
