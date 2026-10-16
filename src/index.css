@@ -33,7 +33,10 @@
     overflow-x: hidden;
   }
 
-  h1, h2, h3, .font-heading {
+  h1,
+  h2,
+  h3,
+  .font-heading {
     font-family: var(--font-heading);
   }
 
@@ -43,7 +46,10 @@
 
   /* Prevent iOS Safari unwanted auto-zoom on input focus */
   @media (max-width: 640px) {
-    input, select, textarea {
+
+    input,
+    select,
+    textarea {
       font-size: 16px !important;
     }
   }
@@ -53,6 +59,7 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -62,17 +69,21 @@
 .category-scrollbar::-webkit-scrollbar {
   height: 6px;
 }
+
 .category-scrollbar::-webkit-scrollbar-track {
   background: rgba(245, 230, 211, 0.6);
   border-radius: 9999px;
 }
+
 .category-scrollbar::-webkit-scrollbar-thumb {
   background: #D97706;
   border-radius: 9999px;
 }
+
 .category-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #B45309;
 }
+
 .category-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #D97706 rgba(245, 230, 211, 0.6);
@@ -142,13 +153,25 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #FAF8F5;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #D97706;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #B45309;
+}
+
+/* Hide Netlify injected badge / drawer */
+[data-netlify-deploy-id],
+.netlify-badge,
+iframe[src*="netlify"],
+div[id*="netlify-identity-widget"] {
+  display: none !important;
+  visibility: hidden !important;
 }
